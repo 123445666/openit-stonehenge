@@ -1,64 +1,48 @@
 <div class="container">
   <div class="sidebar">
     <div class="Météo1">
-      <form [formGroup]="predireForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="predireForm">
         <div class="input-group mb-3">
-          <input type="text" id="data_date" name="data_date" formControlName="data_date" class="form-control"
-            placeholder="dd/MM/yyyy (Ex: 01/05/2024)" aria-label="Date pour predire">
-
-          <button type="submit" [disabled]="predireForm.invalid" class="btn btn-dark">Search</button>
+          <mat-form-field appearance="fill">
+            <input (focus)="picker.open()" matInput [matDatepicker]="picker" id="data_date" name="data_date"
+              formControlName="data_date" class="form-control">
+            <mat-hint>DD/MM/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          <button (click)="onSearch()" class="btn btn-dark">Search</button>
         </div>
-        <div class="container" *ngIf="submitted && predireForm.value.name">
+        <div class="container" *ngIf="predireForm.value.name">
           <p> Click here to see the results: <a href="/date/{{ predireForm.value.data_date }}">{{
               predireForm.value.data_date }}</a></p>
         </div>
       </form>
     </div>
   </div>
+  <button (click)="onPredire()" class="btn btn-dark">Predire</button>
 
 
-  <div class="main-content">
-    <h1>Dates</h1>
-    <div class="resultat">
-      <div class="parti_j">
-        <p>Date 1 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p>Date 2 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p>Date 3 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p>Date 4 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p>Date 5 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p>Date 6 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p>Date 7 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p>Date 8 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-
-      </div>
-
-
-      <div class="courbe">
-        <p>Date 9 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p>Date 10 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p>Date 11 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p>Date 12 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p>Date 13 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p>Date 14 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p>Date 15 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-      </div>
-
+  <div *ngIf="consommations" class="main-content">
+    <div style="display: block;">
+      <canvas #chartCanvas></canvas>
     </div>
 
+    <div class="resultat">
+      <h1>Dates</h1>
+      <div class="parti_j">
+        <div *ngFor="let item of consommations | keyvalue">
+          <div class=" col-md-3">
+            <div class="card" style="width: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title">{{item.key}}</h5>
+                <p> Matin : {{item.value["morning"]}} kwh</p>
+                <p>Après-midi : {{item.value["afternoon"]}} kwh</p>
+                <p>Soir : {{item.value["night"]}} kwh</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

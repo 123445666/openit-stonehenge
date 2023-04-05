@@ -1,49 +1,151 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from "@angular/router";
 import { FormArray } from '@angular/forms';
-import { CompanyService } from '../../services/company.service';
+import { ConsommationService } from '../../services/consommation.service';
+import * as moment from 'moment';
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-input-data-form',
   templateUrl: './input-data-form.component.html',
   styleUrls: ['./input-data-form.component.css'],
-  providers: [CompanyService],
+  providers: [ConsommationService],
 })
-export class InputDataFormComponent implements OnInit {
-  submitted = false;
+export class InputDataFormComponent implements OnInit, AfterViewInit {
+  @ViewChild('chartCanvas') chartCanvas: ElementRef;
   predireForm = this.formBuilder.group({
-    name: [''],
-    domain: ['']
+    data_date: [new Date()]
   });
 
+  consommations: any = [];
+  iday = 0;
+
   constructor(
-    private _companyService: CompanyService, private router: Router, private formBuilder: FormBuilder,
+    private _consommationService: ConsommationService, private router: Router, private formBuilder: FormBuilder,
   ) {
   }
 
   ngOnInit() {
-    this.predireForm.get("name").valueChanges.subscribe(selectedValue => {
-      this.submitted = false;
-    })
-    this.predireForm.get("domain").valueChanges.subscribe(selectedValue => {
-      this.submitted = false;
+    this.predireForm.get("data_date").valueChanges.subscribe(selectedValue => {
     })
   }
 
-  onSubmit() {
-    this.submitted = true;
-    this.predireForm.value.data_date = this.predireForm.value.data_date.toLowerCase();
-    this._companyService.importEmploys(this.predireForm.value).subscribe(
+  ngAfterViewInit(): void {
+
+  }
+
+  async onPredire() {
+    var nextDay = moment(this.predireForm.value.data_date);
+
+    const dateString = moment(nextDay).format('DD-MM-YYYY');
+
+
+    await this._consommationService.predireData(dateString).subscribe(
       response => {
-        let path = '/';
-        this.router.navigate([path]);
       },
       error => {
         console.log(<any>error);
       });
   }
 
+  async onSearch() {
+    this.iday = 0;
+    await this.getDataPredict(this.predireForm.value.data_date);
+  }
+
+  async getDataPredict(datePredict: any) {
+    var nextDay = moment(datePredict).add(this.iday, 'days');
+    this.iday = this.iday + 1;
+
+    const dateString = moment(nextDay).format('DD-MM-YYYY');
+
+    this._consommationService.getDatas(dateString).subscribe(
+      response => {
+        this.consommations = this.groupConsumptionByDate(response);
+        this.drawChart();
+      },
+      error => {
+        console.log(<any>error);
+      });
+  }
+
+  groupConsumptionByDate(data) {
+    const groupedData = {};
+
+    data.forEach(({ data_date, hour, consommation }) => {
+      if (!groupedData[data_date]) {
+        groupedData[data_date] = {
+          morning: 0,
+          afternoon: 0,
+          night: 0,
+        };
+      }
+
+      if (hour >= 5 && hour < 12) {
+        groupedData[data_date].morning += Math.round(consommation);
+      } else if (hour >= 13 && hour < 19) {
+        groupedData[data_date].afternoon += Math.round(consommation);
+      } else if (hour >= 20 || hour < 4) {
+        groupedData[data_date].night += Math.round(consommation);
+      }
+    });
+
+    return groupedData;
+  }
+
+  drawChart() {
+    console.log(this.consommations);
+    const chartLabels: string[] = [];
+    const chartData: number[][] = [[], [], []];
+
+    for (const date in this.consommations) {
+      chartLabels.push(date);
+      chartData[0].push(this.consommations[date].morning);
+      chartData[1].push(this.consommations[date].afternoon);
+      chartData[2].push(this.consommations[date].night);
+    }
+
+
+    const canvas = this.chartCanvas.nativeElement;
+    const chart = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: chartLabels,
+        datasets: [
+          {
+            label: 'Matin',
+            data: chartData[0],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'Apres-midi',
+            data: chartData[1],
+            backgroundColor: 'rgba(255, 206, 86, 0.2)',
+            borderColor: 'rgba(255, 206, 86, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'Nuit',
+            data: chartData[2],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
 }
 
 

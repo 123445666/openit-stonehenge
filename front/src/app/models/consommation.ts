@@ -1,5 +1,6 @@
 export interface Consommation {
-    date: string;
+    data_date: string;
     hour: string;
+    consommation: number;
   }
   

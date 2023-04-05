@@ -15,6 +15,13 @@ import { AppCustomLayoutComponent } from './layout/app-custom-layout/app-custom-
 import { AppRoutingModule } from './app-routing.module';
 
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatNativeDateModule } from '@angular/material/core';
+import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatInputModule} from '@angular/material/input';
+
+import { MAT_DATE_LOCALE } from '@angular/material/core'
 
 const routes: Routes = [
   {
@@ -37,13 +44,21 @@ const routes: Routes = [
     AppCustomLayoutComponent
   ],
   imports: [
+    CommonModule,
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MatDatepickerModule,
+    MatNativeDateModule, 
+    MatFormFieldModule,
+    MatInputModule
   ],
-  providers: [],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
