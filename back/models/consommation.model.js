@@ -6,17 +6,16 @@ const Schema = mongoose.Schema;
 const consommationSchema = new Schema({
   consommation:
   {
-    type: String,
-    required: true
+    type: Number,
   },
-  date:
+  data_date:
   {
     type: String,
     required: true
   },
   hour:
   {
-    type: String,
+    type: Number,
   }
 });
 
