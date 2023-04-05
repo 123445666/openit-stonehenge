@@ -1,0 +1,64 @@
+<div class="container">
+  <div class="sidebar">
+    <div class="Météo1">
+      <form [formGroup]="predireForm" (ngSubmit)="onSubmit()">
+        <div class="input-group mb-3">
+          <input type="text" id="data_date" name="data_date" formControlName="data_date" class="form-control"
+            placeholder="dd/MM/yyyy (Ex: 01/05/2024)" aria-label="Date pour predire">
+
+          <button type="submit" [disabled]="predireForm.invalid" class="btn btn-dark">Search</button>
+        </div>
+        <div class="container" *ngIf="submitted && predireForm.value.name">
+          <p> Click here to see the results: <a href="/date/{{ predireForm.value.data_date }}">{{
+              predireForm.value.data_date }}</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div class="main-content">
+    <h1>Dates</h1>
+    <div class="resultat">
+      <div class="parti_j">
+        <p>Date 1 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Date 2 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Date 3 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Date 4 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Date 5 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Date 6 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Date 7 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Date 8 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+
+      </div>
+
+
+      <div class="courbe">
+        <p>Date 9 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Date 10 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Date 11 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Date 12 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Date 13 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Date 14 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p>Date 15 <br> Matin : <br> Après-midi : <br> Soir : </p> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

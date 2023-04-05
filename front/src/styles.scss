@@ -1,0 +1,159 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  color: #ffffff;
+  padding: 20px;
+  position: relative;
+  bottom: 100px;
+}
+.navbar a {
+  color: #fff;
+  text-decoration: none;
+  margin-right: 20px;
+}
+.header {
+  color: #ffffff;
+  padding: 20px;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: bold;
+}
+.main-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
+.sidebar {
+  width: 25%;
+  height: 450px;
+  background-color: #b6b3b3;
+  text-align: center;
+  opacity: calc(0.5);
+}
+.container {
+  max-width: 125000px;
+  text-align: center;
+  display: flex;
+  position: relative;
+  bottom: 100px;
+
+}
+.main-content {
+  height: 450px;
+  width: 1200px;
+  justify-content: space-between;
+  background-color: rgb(207, 202, 202);
+  text-align: center;
+  opacity: calc(0.5);
+  
+  
+}
+
+
+.ti{
+  color: #ffffff;
+  position: relative;
+  top: 1px;
+}
+.p{
+  font-size: 16px;
+}
+
+  .footer{
+      text-align: center;
+      font-size: 16px;
+      color: #000000;
+      position: relative;
+      bottom: 100px;
+      opacity: calc(0.9);
+  }
+  
+.text{
+background-color: lightgray;
+width: 12000px;
+}
+.img{
+max-width: 125000px;
+text-align: center;
+display: flex;
+background-color: lightgray;
+height: 200px;
+font-size: 25px;
+}
+
+.useless{
+display: flex;
+background-color: lightgrey;
+max-width: 100%;
+height: 100px;
+}
+
+.Météo1{
+font-family: Arial, Helvetica, sans-serif ;
+margin-left: 10px ;
+margin-top: 10px ;
+
+}
+.Jour{
+display: flex;
+margin-top:60px ;
+
+}
+.Fichier{
+display: block;
+margin-top: 50px;
+
+}
+.resultat{
+display: block;
+font-size: 20px;
+margin-top: 25px;
+}
+
+.parti_j{
+display: flex;
+text-align: left;
+margin-left: 10px;
+}
+
+.courbe{
+display: flex;
+text-align: left;
+margin-left: 10px;
+
+}
+.police{
+position: absolute;
+
+left: 600px;
+
+}
+.body{
+background-image: url("assets/image.png");
+background-repeat: no-repeat;
+background-size: cover;
+width: 100%;
+height: 100%;
+backdrop-filter: blur(5px);
+color: rgb(0, 0, 0);
+overflow: hidden;
+top: 0;
+left: 0;
+position: fixed;
+}
+img{
+  width: 200px;
+  height: 150px;
+  position: relative;
+  bottom: 10px;
+  border-radius: 50%;
+}
+.lokkki{
+  width: 200px;
+  height: 120px;
+  position: relative;
+  bottom: 150px;
+}
