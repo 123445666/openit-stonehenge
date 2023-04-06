@@ -63,7 +63,7 @@ export class InputDataFormComponent implements OnInit, AfterViewInit {
 
     this._consommationService.getDatas(dateString).subscribe(
       response => {
-        this.consommations = this.groupConsumptionByDate(response);
+        this.consommations = response;
         this.drawChart();
       },
       error => {
@@ -96,15 +96,12 @@ export class InputDataFormComponent implements OnInit, AfterViewInit {
   }
 
   drawChart() {
-    console.log(this.consommations);
     const chartLabels: string[] = [];
     const chartData: number[][] = [[], [], []];
 
-    for (const date in this.consommations) {
-      chartLabels.push(date);
-      chartData[0].push(this.consommations[date].morning);
-      chartData[1].push(this.consommations[date].afternoon);
-      chartData[2].push(this.consommations[date].night);
+    for (const item of this.consommations) {
+      chartLabels.push(item.data_date);
+      chartData[0].push(item.consommation);
     }
 
 
@@ -115,24 +112,10 @@ export class InputDataFormComponent implements OnInit, AfterViewInit {
         labels: chartLabels,
         datasets: [
           {
-            label: 'Matin',
+            label: 'Consommation prédite',
             data: chartData[0],
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1
-          },
-          {
-            label: 'Apres-midi',
-            data: chartData[1],
-            backgroundColor: 'rgba(255, 206, 86, 0.2)',
-            borderColor: 'rgba(255, 206, 86, 1)',
-            borderWidth: 1
-          },
-          {
-            label: 'Nuit',
-            data: chartData[2],
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: ['rgba(75, 192, 192, 0.4)', 'rgba(255, 206, 86, 0.4)', 'rgba(255, 99, 132, 0.4)'],
+            borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 206, 86, 1)', 'rgba(255, 99, 132, 1)'],
             borderWidth: 1
           }
         ]

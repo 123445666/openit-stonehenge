@@ -4,7 +4,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { InputDataFormComponent } from './layout/input-data-form/input-data-form.component';
-import { TableDataFormComponent } from './layout/table-data-form/table-data-form.component';
 import { Routes, RouterModule } from "@angular/router";
 
 import { HttpClientModule } from '@angular/common/http';
@@ -24,21 +23,12 @@ import {MatInputModule} from '@angular/material/input';
 import { MAT_DATE_LOCALE } from '@angular/material/core'
 
 const routes: Routes = [
-  {
-    path: '',
-    component: AppCustomLayoutComponent,
-  },
-  {
-    path: 'company/:name',
-    component: TableDataFormComponent
-  },
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
     InputDataFormComponent,
-    TableDataFormComponent,
     HeaderComponent,
     FooterComponent,
     AppCustomLayoutComponent

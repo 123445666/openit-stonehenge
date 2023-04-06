@@ -30,14 +30,13 @@
     <div class="resultat">
       <h1>Dates</h1>
       <div class="parti_j">
-        <div *ngFor="let item of consommations | keyvalue">
+        <div *ngFor="let item of consommations">
           <div class=" col-md-3">
             <div class="card" style="width: 18rem;">
               <div class="card-body">
-                <h5 class="card-title">{{item.key}}</h5>
-                <p> Matin : {{item.value["morning"]}} kwh</p>
-                <p>Après-midi : {{item.value["afternoon"]}} kwh</p>
-                <p>Soir : {{item.value["night"]}} kwh</p>
+                <h5 class="card-title">{{item.data_date}}</h5>
+                <p>Donnée prédite</p>
+                <b>{{item.consommation}} kwh</b>
               </div>
             </div>
           </div>
