@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from "@angular/router";
 import { FormArray } from '@angular/forms';
@@ -13,7 +13,7 @@ Chart.register(...registerables);
   styleUrls: ['./input-data-form.component.css'],
   providers: [ConsommationService],
 })
-export class InputDataFormComponent implements OnInit, AfterViewInit {
+export class InputDataFormComponent implements OnInit {
   @ViewChild('chartCanvas') chartCanvas: ElementRef;
   predireForm = this.formBuilder.group({
     data_date: [new Date()]
@@ -28,19 +28,14 @@ export class InputDataFormComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.predireForm.get("data_date").valueChanges.subscribe(selectedValue => {
-    })
-  }
-
-  ngAfterViewInit(): void {
-
   }
 
   async onPredire() {
+    console.log(this.predireForm.value.data_date);
     var nextDay = moment(this.predireForm.value.data_date);
 
     const dateString = moment(nextDay).format('DD-MM-YYYY');
-
+    console.log(dateString);
 
     await this._consommationService.predireData(dateString).subscribe(
       response => {
@@ -52,6 +47,7 @@ export class InputDataFormComponent implements OnInit, AfterViewInit {
 
   async onSearch() {
     this.iday = 0;
+    console.log(this.predireForm.value.data_date);
     await this.getDataPredict(this.predireForm.value.data_date);
   }
 
@@ -95,9 +91,15 @@ export class InputDataFormComponent implements OnInit, AfterViewInit {
     return groupedData;
   }
 
+  chart: Chart;
+
   drawChart() {
     const chartLabels: string[] = [];
     const chartData: number[][] = [[], [], []];
+
+    if (this.chart) {
+      this.chart.destroy();
+    }
 
     for (const item of this.consommations) {
       chartLabels.push(item.data_date);
@@ -106,15 +108,15 @@ export class InputDataFormComponent implements OnInit, AfterViewInit {
 
 
     const canvas = this.chartCanvas.nativeElement;
-    const chart = new Chart(canvas, {
-      type: 'bar',
+    this.chart = new Chart(canvas, {
+      type: 'line',
       data: {
         labels: chartLabels,
         datasets: [
           {
             label: 'Consommation prédite',
             data: chartData[0],
-            backgroundColor: ['rgba(75, 192, 192, 0.4)', 'rgba(255, 206, 86, 0.4)', 'rgba(255, 99, 132, 0.4)'],
+            backgroundColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 206, 86, 1)', 'rgba(255, 99, 132, 1)'],
             borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 206, 86, 1)', 'rgba(255, 99, 132, 1)'],
             borderWidth: 1
           }
@@ -123,7 +125,10 @@ export class InputDataFormComponent implements OnInit, AfterViewInit {
       options: {
         scales: {
           y: {
-            beginAtZero: true
+            type: 'linear',
+            ticks: {
+              stepSize: 50000
+            }
           }
         }
       }
