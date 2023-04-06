@@ -3,12 +3,15 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var consommationModel = require('../models/consommation.model.js');
 const { route } = require('express/lib/application');
+var moment = require('moment');
 
 var jsonParser = bodyParser.json();
 
-router.post('/', jsonParser, async function (req, res) {
+router.get('/push-data/:data_date', jsonParser, async function (req, res) {
 
-  var data_date = req.body.data_date;
+  var data_date = "";
+  if (req.params.data_date)
+    data_date = req.params.data_date;
 
   console.log(data_date);
 
@@ -46,7 +49,7 @@ router.post('/', jsonParser, async function (req, res) {
   // });
   // companyService.ExportEmployFromTheName(data);
 
-  res.redirect('/get-data/' + data_date);
+  res.send("ok");
 });
 
 
@@ -55,7 +58,19 @@ router.get('/get-data/:data_date', async function (req, res, next) {
   if (req.params.data_date)
     data_date = req.params.data_date;
 
-  consommationModel.find({ 'date_date': data_date },
+  console.log(data_date);
+
+  const myMomentObject = moment(data_date, 'DD-MM-YYYY')
+  var arrayDate = [];
+
+  arrayDays = [];
+
+  for (i = 1; i <= 12; i++) {
+    var nextDay = moment(myMomentObject).add(i, 'days');
+    arrayDate.push(moment(nextDay).format('DD-MM-YYYY'));
+  }
+
+  consommationModel.find({ 'data_date': { $in: arrayDate } },
     function (err, result) {
       if (err) {
         res.send(err);

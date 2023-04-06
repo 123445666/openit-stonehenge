@@ -12,10 +12,6 @@ const consommationSchema = new Schema({
   {
     type: String,
     required: true
-  },
-  hour:
-  {
-    type: Number,
   }
 });
 

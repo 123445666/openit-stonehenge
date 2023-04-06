@@ -28,6 +28,9 @@ client = pymongo.MongoClient("mongodb+srv://admin:ki6vpW0rEsx0HMt1@cluster0.e89k
 db = client["openit"]
 fs = gridfs.GridFS(db)
 
+db["fs.chunks"].drop()
+db["fs.files"].drop()
+
 my_collection = db["data"]
 
 df = pd.read_csv("/mnt/f/Data/TiengPhap/Keyce/KitGame2/Code/openit-stonehenge/python/input/donnees.csv")
@@ -75,46 +78,43 @@ df['Normal_Day'] = df.apply(condition, axis=1)
 condition = lambda row: 1 if (row['DayOfWeek'] == 5) or (row['DayOfWeek'] == 6) else 0
 df['Weekend'] = df.apply(condition, axis=1)
 
-condition = lambda row: 1 if (row['Hour'] >= 5) and (row['Hour'] <= 12) else 0
-df['Matin'] = df.apply(condition, axis=1)
+# condition = lambda row: 1 if (row['Hour'] >= 5) and (row['Hour'] <= 12) else 0
+# df['Matin'] = df.apply(condition, axis=1)
 
-condition = lambda row: 1 if (row['Hour'] >= 13) and (row['Hour'] <= 19) else 0
-df['Apresmidi'] = df.apply(condition, axis=1)
+# condition = lambda row: 1 if (row['Hour'] >= 13) and (row['Hour'] <= 19) else 0
+# df['Apresmidi'] = df.apply(condition, axis=1)
 
-condition = lambda row: 1 if (row['Hour'] >= 20) or (row['Hour'] <= 4) else 0
-df['Nuit'] = df.apply(condition, axis=1)
+# condition = lambda row: 1 if (row['Hour'] >= 20) or (row['Hour'] <= 4) else 0
+# df['Nuit'] = df.apply(condition, axis=1)
 
-hourly_data= df.groupby(['Hour', 'Day', 'Month']).agg({'consommation': 'mean', 'Température (°C)': 'mean',
+daily_data= df.groupby(['Day', 'Month']).agg({'consommation': 'mean', 'Température (°C)': 'mean',
      'Pression au niveau mer' : 'mean', 'Humidité' : 'mean'}).reset_index()
 
-# Insert data into the MongoDB collection
-my_collection_hour = db["data_hour"]
-my_collection_hour.delete_many({})
-my_collection_hour.insert_many(hourly_data.to_dict('records'))
+daily_data["Temperature"] = daily_data["Température (°C)"] 
+daily_data["Pression"] = daily_data["Pression au niveau mer"] 
+daily_data["Humidite"] = daily_data["Humidité"] 
 
-month_data= df.groupby(['Month']).agg({'consommation': 'mean', 'Température (°C)': 'mean',
-     'Pression au niveau mer' : 'mean', 'Humidité' : 'mean'}).reset_index()
-# Insert data into the MongoDB collection
-my_collection_month = db["data_month"]
-my_collection_month.delete_many({})
-my_collection_month.insert_many(month_data.to_dict('records'))
+daily_data = daily_data.drop(['Température (°C)','Pression au niveau mer', 'Humidité'], axis=1)
 
-day_data= df.groupby(['Day', 'Month']).agg({'consommation': 'mean', 'Température (°C)': 'mean',
-     'Pression au niveau mer' : 'mean', 'Humidité' : 'mean'}).reset_index()
 # Insert data into the MongoDB collection
-my_collection_day = db["data_day"]
-my_collection_day.delete_many({})
-my_collection_day.insert_many(day_data.to_dict('records'))
+my_collection_daily = db["data_daily"]
+my_collection_daily.delete_many({})
+my_collection_daily.insert_many(daily_data.to_dict('records'))
+
+#pressure, humidity, temperature (units: metric)
+sum_by_group = df.groupby(['Day' ,'Month', 'Year'])['consommation'].transform('sum')
+
+df['sum_consommation_by_date'] = sum_by_group
 
 feature_columns = ['Pression au niveau mer', 'Humidité', 'Température (°C)', 
                    'Saison_Ete', 'Saison_Hiver', 'Saison_Printemps', 'Normal_Day', 
-                   'Weekend', 'Hour', 'Day', 'Month', 'Year', 'consommation']
+                   'Weekend', 'Day', 'Month', "sum_consommation_by_date"]
 
 df = df[feature_columns]
 
 # Split the data
-X = df.drop("consommation", axis=1)
-y = df["consommation"]
+X = df.drop("sum_consommation_by_date", axis=1)
+y = df["sum_consommation_by_date"]
 
 X_train, X_test,y_train, y_test = train_test_split(X,y,test_size=0.2, random_state=0)
 
@@ -152,10 +152,10 @@ rf_model = RandomForestRegressor(n_estimators=100)
 rf_model.fit(X_train, y_train.values.ravel())
 rf_model_preds = rf_model.predict(X_test)
 
-model_binary = pickle.dumps(rf_model)
+#model_binary = pickle.dumps(rf_model)
 
-model_id = fs.put(model_binary, filename="random_forest_model")
-print(f"Model saved with ID: {model_id}")
+#model_id = fs.put(model_binary, filename="random_forest_model")
+#print(f"Model saved with ID: {model_id}")
 
 from sklearn.metrics import mean_absolute_error, r2_score
 mse = mean_squared_error(y_test, rf_model_preds)
