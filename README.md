@@ -49,20 +49,17 @@ Clone the project
 
 Go to the project directory
 
-```bash
-  cd Hymie
-  cd cyber-web-back
-```
-
 Install dependencies (in both front and back directories)
 
 ```bash
+  cd back
   npm install
 ```
 
 Start the server (in both front and back directories)
 
 ```bash
+ cd front
   npm start
 ```
 
