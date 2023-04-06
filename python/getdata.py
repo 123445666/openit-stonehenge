@@ -6,10 +6,19 @@ import pickle
 import sys
 from datetime import timedelta, date
 from sklearn.ensemble import RandomForestRegressor
+import requests
+import json
 
 if __name__ == '__main__':  
     num = 0
+    api_meteo = "https://www.meteosource.com/api/v1/free/point?place_id=Montpellier&sections=current%2Chourly&language=en&units=auto&key=89ivg44q9w8rsv6zyqype3pd1rqztvstsmrwzlac"
 
+    def getDataWeather():
+        global api_meteo
+        r = requests.get(api_meteo)
+        res = json.loads(r.content)
+        return res
+    
     def auto_add_date(db, current_date):
         global num
         print(num)
